@@ -1,0 +1,71 @@
+# ──────────────────────────────────────────────────────────────
+# EKA Enterprise-RAG -- On-Premise Deployment-Bundle
+#
+# Drei Dienste in EINEM privaten Netz. Nur der App-Port (8501) ist nach aussen
+# offen; Qdrant und Ollama sind ausschliesslich intern erreichbar -> keine Daten
+# verlassen den Host. Alles laeuft lokal (Open-Source-LLM via Ollama).
+#
+# Start:  docker compose up -d --build
+#         docker compose exec ollama ollama pull "$OLLAMA_MODEL"
+# ──────────────────────────────────────────────────────────────
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: unless-stopped
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    networks: [eka_internal]
+    # Kein ports:-Mapping -> nur intern erreichbar.
+
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    volumes:
+      - ollama_models:/root/.ollama
+    networks: [eka_internal]
+    # GPU optional: Block einkommentieren, wenn NVIDIA-Runtime vorhanden ist.
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+
+  app:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    restart: unless-stopped
+    depends_on: [qdrant, ollama]
+    environment:
+      # App spricht die Dienste ueber den internen Compose-DNS-Namen an.
+      QDRANT_URL: "http://qdrant:6333"
+      OLLAMA_BASE_URL: "http://ollama:11434"
+      OLLAMA_MODEL: "${OLLAMA_MODEL:-qwen2.5:14b}"
+      # Cloud-Storage (Phase 5) optional -- nur wenn genutzt, in .env setzen.
+      S3_ENABLED: "${S3_ENABLED:-false}"
+      S3_BUCKET: "${S3_BUCKET:-}"
+      S3_PREFIX: "${S3_PREFIX:-}"
+      S3_ENDPOINT_URL: "${S3_ENDPOINT_URL:-}"
+      S3_REGION: "${S3_REGION:-}"
+      S3_ACL_READER: "${S3_ACL_READER:-composite}"
+      # S3-Credentials NUR aus der Umgebung -- niemals ins Image/Repo.
+      AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:-}"
+      AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY:-}"
+    ports:
+      - "8501:8501"
+    volumes:
+      # Persistente App-Daten (Audit-Log, Dokumente, Meeting-Freigaben, HF-Cache).
+      - ../data:/app/data
+      - hf_cache:/app/.hf_cache
+    networks: [eka_internal]
+
+networks:
+  eka_internal:
+    driver: bridge
+
+volumes:
+  qdrant_storage:
+  ollama_models:
+  hf_cache:

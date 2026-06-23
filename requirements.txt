@@ -1,0 +1,30 @@
+# ── Core LlamaIndex ──
+llama-index-core
+llama-index-llms-ollama
+llama-index-embeddings-huggingface
+llama-index-vector-stores-qdrant
+llama-index-readers-file
+
+# ── Cloud Storage (Phase 5: S3-kompatibel) ──
+boto3
+
+# ── Vector Database ──
+qdrant-client
+
+# ── Embeddings ──
+sentence-transformers
+
+# ── Audio Transcription ──
+faster-whisper
+
+# ── Frontend ──
+streamlit
+
+# ── Document Parsing ──
+PyPDF2
+pypdf
+python-docx
+openpyxl
+
+# ── Demo-Daten-Generator (nur fuer die Test-Firma noetig) ──
+reportlab
