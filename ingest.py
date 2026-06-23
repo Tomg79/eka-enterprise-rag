@@ -323,6 +323,12 @@ def ingest_all(progress_callback=None) -> dict:
     Settings.embed_model = embed_model
     client = _make_qdrant_client()
     try:
+        # Frischer Index: bestehende Collection erst loeschen -> kein Vermischen alter/neuer
+        # Daten, kein manuelles Loeschen von storage/qdrant noetig.
+        try:
+            client.delete_collection(QDRANT_COLLECTION_NAME)
+        except Exception:
+            pass
         vector_store = QdrantVectorStore(client=client, collection_name=QDRANT_COLLECTION_NAME, flat_metadata=True)
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         VectorStoreIndex(nodes=all_nodes, storage_context=storage_context, show_progress=True)
