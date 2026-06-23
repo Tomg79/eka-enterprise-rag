@@ -5,7 +5,7 @@ Firmendaten (Dateifreigaben, SQL-Datenbanken, Cloud-/Object-Storage, API-Exporte
 **übernimmt die bestehenden Zugriffsrechte deterministisch** (kein LLM für die
 Rechte-Auswertung) und beantwortet Fragen pro angemeldetem Nutzer **nur mit dem, was
 er sehen darf**. Alles läuft on-premise (Open-Source-LLM via Ollama, Embeddings lokal,
-Vektor-DB Qdrant) — es verlassen keine Daten das Netz.
+Vektor-DB Qdrant). Es verlassen keine Daten das Netz.
 
 ## Demo
 
@@ -23,7 +23,7 @@ python quickstart.py                 # erzeugt Demo-Firma, richtet alles ein, le
 $env:AUTH_ENABLED="true"; python -m streamlit run app.py
 ```
 Eigene Daten statt Demo: `python quickstart.py --data-root C:\pfad\zur\firma`
-— oder im Browser über **Sidebar → „🔧 Einrichtung (Setup) starten"** (Ordner-Dialog).
+— oder im Browser über **Sidebar → „ Einrichtung (Setup) starten"** (Ordner-Dialog).
 
 ## Architektur
 - **Connectoren** (`connectors/`): `filesystem` (txt/md/pdf/docx), `sql` (generisch,
@@ -49,7 +49,7 @@ Eigene Daten statt Demo: `python quickstart.py --data-root C:\pfad\zur\firma`
   zu Transparenz/Audit (werden bewusst NICHT automatisch auf Live-Rechte angewendet).
 - **UI** (`app.py`): Chat / Audit-Log / Meetings + Setup-Assistent + Login.
 
-## Sicherheit (nicht verhandelbar)
+## Sicherheit 
 fail-closed · deny-by-default · sofortiger Rechteentzug · keine Daten verlassen das Netz ·
 SQL nur parametrisiert + Whitelist (kein frei generiertes SQL) · Secrets nur aus der
 Umgebung. Details: `SECURITY.md`.
@@ -65,12 +65,12 @@ Onboarding/Identity, API-Dumps, Klassifizierung/Veraltet, Beschluss-Extraktor, A
 `deploy/` (Docker-Compose: Qdrant + Ollama + App; Installer) und `packaging/` (Windows-.exe
 via PyInstaller). Siehe `ONBOARDING.md`, `AUTH.md`, `QUICKSTART.md`.
 
-## Ehrliche Grenzen
+## Grenzen
 Pilotreif/Demo-fähig, nicht „über Nacht für Konzerne fertig": LLM-Modell wird separat
 bereitgestellt (nicht im .exe); echtes SSO (AD/OIDC) ist ein Andockpunkt, kein fertiger
 Connector; abgeleitete Identitäten sind DRAFTs (in Produktion an AD/HR koppeln);
 externer Pentest/Lasttest stehen aus. Beschluss-Lineage wird angezeigt, nicht
-auto-angewendet (bewusst, Sicherheit).
+auto-angewendet (Sicherheit).
 
 ## Lizenz
 PolyForm Noncommercial License 1.0.0 (siehe `LICENSE`) — frei einseh- und nutzbar fuer
