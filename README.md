@@ -65,7 +65,7 @@ Onboarding/Identity, API-Dumps, Klassifizierung/Veraltet, Beschluss-Extraktor, A
 `deploy/` (Docker-Compose: Qdrant + Ollama + App; Installer) und `packaging/` (Windows-.exe
 via PyInstaller). Siehe `ONBOARDING.md`, `AUTH.md`, `QUICKSTART.md`.
 
-## Grenzen
+## Bisherige Grenzen
 Pilotreif/Demo-fähig, nicht „über Nacht für Konzerne fertig": LLM-Modell wird separat
 bereitgestellt (nicht im .exe); echtes SSO (AD/OIDC) ist ein Andockpunkt, kein fertiger
 Connector; abgeleitete Identitäten sind DRAFTs (in Produktion an AD/HR koppeln);
